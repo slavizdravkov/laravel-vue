@@ -11,8 +11,18 @@
 |
 */
 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+
 Route::get('/', function () {
     return view('welcome');
+});
+
+Route::group(['prefix' => 'question'], function () {
+    Route::get('', [
+        'uses' => 'QuestionsController@index',
+        'as' => 'question.index'
+    ]);
 });
 
 Auth::routes();
