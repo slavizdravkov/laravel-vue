@@ -18,10 +18,15 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::group(['prefix' => 'question'], function () {
+Route::group(['prefix' => 'questions'], function () {
     Route::get('', [
         'uses' => 'QuestionsController@index',
-        'as' => 'question.index'
+        'as' => 'questions.index'
+    ]);
+
+    Route::get('/{id}', [
+        'uses' => 'QuestionController@show',
+        'as' => 'questions.show'
     ]);
 });
 
