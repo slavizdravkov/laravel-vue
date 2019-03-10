@@ -24,9 +24,19 @@ Route::group(['prefix' => 'questions'], function () {
         'as' => 'questions.index'
     ]);
 
-    Route::get('/{id}', [
-        'uses' => 'QuestionController@show',
+    Route::get('show/{id}', [
+        'uses' => 'QuestionsController@show',
         'as' => 'questions.show'
+    ]);
+
+    Route::get('create', [
+        'uses' => 'QuestionsController@create',
+        'as' => 'questions.create'
+    ]);
+
+    Route::post('store' ,[
+        'uses' => 'QuestionsController@store',
+        'as' => 'questions.store'
     ]);
 });
 
