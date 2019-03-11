@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AskQuestionRequest;
 use App\Question;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class QuestionsController extends Controller
@@ -36,12 +38,24 @@ class QuestionsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  AskQuestionRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(AskQuestionRequest $request)
     {
-        //
+        $user = Auth::user();
+        if (!$user) {
+            redirect()->back();
+        }
+
+        $question = new Question([
+            'title' => $request->input('title'),
+            'body' => $request->input('body')
+        ]);
+
+        $user->questions()->save($question);
+
+        return redirect()->route('questions.index')->with('success', 'Your question has been submitted');
     }
 
     /**

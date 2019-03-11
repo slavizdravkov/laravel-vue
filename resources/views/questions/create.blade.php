@@ -18,19 +18,23 @@
                         <form action="{{ route('questions.store') }}"  method="post">
                             <div class="form-group">
                                 <label for="question-title">Question Title</label>
-                                <input type="text" id="question-title" name="title" class="form-control {{ $errors->has('title') ? 'is-invalid' : '' }}">
+                                <input type="text" value="{{ old('title') }}" id="question-title" name="title" class="form-control {{ $errors->has('title') ? 'is-invalid' : '' }}">
 
                                 @if($errors->has('title'))
-                                    <strong>{{ $errors->first('title') }}</strong>
+                                    <div class="invalid-feedback">
+                                        <strong>{{ $errors->first('title') }}</strong>
+                                    </div>
                                 @endif
                             </div>
                             
                             <div class="form-group">
                                 <label for="question-body">Explain your question</label>
-                                <textarea id="question-body" name="body", rows="10" class="form-control {{ $errors->has('body') ? 'is-invalid' : '' }}"></textarea>
+                                <textarea id="question-body" name="body", rows="10" class="form-control {{ $errors->has('body') ? 'is-invalid' : '' }}">{{ old('body') }}</textarea>
 
                                 @if($errors->has('body'))
-                                    <strong>{{ $errors->first('body') }}</strong>
+                                    <div class="invalid-feedback">
+                                        <strong>{{ $errors->first('body') }}</strong>
+                                    </div>
                                 @endif
                             </div>
 
