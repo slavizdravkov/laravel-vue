@@ -15,7 +15,7 @@
                     </div>
 
                     <div class="card-body">
-                        @include('partials.messages')
+                        @include('questions._messages')
 
                         @foreach($questions as $question)
                             <div class="media">
@@ -33,9 +33,14 @@
                                     </div>
                                 </div>
                                 <div class="media-body">
-                                    <h3 class="mt-0">
-                                        <a href="{{ route('questions.show', ['id' => $question->id]) }}">{{ $question->title }}</a>
-                                    </h3>
+                                    <div class="d-flex align-items-center">
+                                        <h3 class="mt-0">
+                                            <a href="{{ route('questions.show', ['id' => $question->id]) }}">{{ $question->title }}</a>
+                                        </h3>
+                                        <div class="ml-auto">
+                                            <a href="{{ route('questions.edit', $question->id) }}" class="btn btn-sm btn-outline-info">Edit</a>
+                                        </div>
+                                    </div>
                                     <p class="lead">
                                         Asked by
                                         <a href="#">{{ $question->user->name }}</a>

@@ -38,6 +38,16 @@ Route::group(['prefix' => 'questions'], function () {
         'uses' => 'QuestionsController@store',
         'as' => 'questions.store'
     ]);
+
+    Route::get('{question}/edit', [
+        'uses' => 'QuestionsController@edit',
+        'as' => 'questions.edit'
+    ]);
+
+    Route::post('{question}/update', [
+        'uses' => 'QuestionsController@update',
+        'as' => 'questions.update'
+    ]);
 });
 
 Auth::routes();
