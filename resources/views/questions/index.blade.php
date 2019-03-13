@@ -35,10 +35,19 @@
                                 <div class="media-body">
                                     <div class="d-flex align-items-center">
                                         <h3 class="mt-0">
-                                            <a href="{{ route('questions.show', ['id' => $question->id]) }}">{{ $question->title }}</a>
+                                            <a href="{{ route('questions.show', ['slug' => $question->slug]) }}">{{ $question->title }}</a>
                                         </h3>
                                         <div class="ml-auto">
                                             <a href="{{ route('questions.edit', $question->id) }}" class="btn btn-sm btn-outline-info">Edit</a>
+                                            <form class="form-delete" action="{{ route('questions.destroy', $question->id) }}" method="post">
+                                                <button
+                                                    type="submit"
+                                                    class="btn btn-sm btn-outline-danger"
+                                                    onclick="return confirm('Are you sure?')"
+                                                >Delete
+                                                </button>
+                                                @csrf
+                                            </form>
                                         </div>
                                     </div>
                                     <p class="lead">

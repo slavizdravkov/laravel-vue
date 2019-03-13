@@ -66,7 +66,9 @@ class QuestionsController extends Controller
      */
     public function show(Question $question)
     {
-        //
+        $question->increment('views');
+
+        return view('questions.show', ['question' => $question]);
     }
 
     /**
@@ -83,7 +85,7 @@ class QuestionsController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  AskQuestionRequest  $request
      * @param  \App\Question  $question
      * @return \Illuminate\Http\Response
      */
@@ -102,6 +104,8 @@ class QuestionsController extends Controller
      */
     public function destroy(Question $question)
     {
-        //
+        $question->delete();
+
+        return redirect()->route('questions.index')->with('success', 'Your question has been deleted.');
     }
 }

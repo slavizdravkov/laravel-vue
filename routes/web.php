@@ -48,6 +48,16 @@ Route::group(['prefix' => 'questions'], function () {
         'uses' => 'QuestionsController@update',
         'as' => 'questions.update'
     ]);
+
+    Route::post('{question}/destroy', [
+        'uses' => 'QuestionsController@destroy',
+        'as' => 'questions.destroy'
+    ]);
+
+    Route::get('{slug}', [
+        'uses' => 'QuestionsController@show',
+        'as' => 'questions.show'
+    ]);
 });
 
 Auth::routes();
