@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AskQuestionRequest;
 use App\Question;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -76,9 +77,12 @@ class QuestionsController extends Controller
      *
      * @param  \App\Question  $question
      * @return \Illuminate\Http\Response
+     * @throws AuthorizationException
      */
     public function edit(Question $question)
     {
+        $this->authorize('update', $question);
+
         return view('questions.edit', ['question' => $question]);
     }
 
@@ -88,9 +92,12 @@ class QuestionsController extends Controller
      * @param  AskQuestionRequest  $request
      * @param  \App\Question  $question
      * @return \Illuminate\Http\Response
+     * @throws AuthorizationException
      */
     public function update(AskQuestionRequest $request, Question $question)
     {
+        $this->authorize('update', $question);
+
         $question->update($request->only('title', 'body'));
 
         return redirect()->route('questions.index')->with('success', 'Your question has been updated');
@@ -101,9 +108,12 @@ class QuestionsController extends Controller
      *
      * @param  \App\Question  $question
      * @return \Illuminate\Http\Response
+     * @throws AuthorizationException
      */
     public function destroy(Question $question)
     {
+        $this->authorize('delete', $question);
+
         $question->delete();
 
         return redirect()->route('questions.index')->with('success', 'Your question has been deleted.');

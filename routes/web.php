@@ -24,40 +24,38 @@ Route::group(['prefix' => 'questions'], function () {
         'as' => 'questions.index'
     ]);
 
-    Route::get('show/{id}', [
-        'uses' => 'QuestionsController@show',
-        'as' => 'questions.show'
-    ]);
-
-    Route::get('create', [
-        'uses' => 'QuestionsController@create',
-        'as' => 'questions.create'
-    ]);
-
-    Route::post('store' ,[
-        'uses' => 'QuestionsController@store',
-        'as' => 'questions.store'
-    ]);
-
-    Route::get('{question}/edit', [
-        'uses' => 'QuestionsController@edit',
-        'as' => 'questions.edit'
-    ]);
-
-    Route::post('{question}/update', [
-        'uses' => 'QuestionsController@update',
-        'as' => 'questions.update'
-    ]);
-
-    Route::post('{question}/destroy', [
-        'uses' => 'QuestionsController@destroy',
-        'as' => 'questions.destroy'
-    ]);
-
     Route::get('{slug}', [
         'uses' => 'QuestionsController@show',
         'as' => 'questions.show'
     ]);
+
+    Route::group(['middleware' => ['auth']], function () {
+        Route::get('create', [
+            'uses' => 'QuestionsController@create',
+            'as' => 'questions.create'
+        ]);
+
+        Route::post('store' ,[
+            'uses' => 'QuestionsController@store',
+            'as' => 'questions.store'
+        ]);
+
+        Route::get('{question}/edit', [
+            'uses' => 'QuestionsController@edit',
+            'as' => 'questions.edit'
+        ]);
+
+        Route::post('{question}/update', [
+            'uses' => 'QuestionsController@update',
+            'as' => 'questions.update'
+        ]);
+
+        Route::post('{question}/destroy', [
+            'uses' => 'QuestionsController@destroy',
+            'as' => 'questions.destroy'
+        ]);
+    });
+
 });
 
 Auth::routes();
