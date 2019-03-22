@@ -61,3 +61,23 @@ Route::group(['prefix' => 'questions'], function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::post('/questions/{question}/answers/store', [
+    'uses' => 'AnswersController@store',
+    'as' => 'questions.answers.store'
+]);
+
+Route::post('/questions/{question}/answers/{answer}/update', [
+    'uses' => 'AnswersController@update',
+    'as' => 'questions.answers.update'
+]);
+
+Route::post('/questions/{question}/answers/{answer}/destroy', [
+    'uses' => 'AnswersController@destroy',
+    'as' => 'questions.answers.destroy'
+]);
+
+Route::post('/questions/{question}/answers/{answer}/edit', [
+    'uses' => 'AnswersController@edit',
+    'as' => 'questions.answers.edit'
+]);
