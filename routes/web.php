@@ -77,7 +77,7 @@ Route::post('/questions/{question}/answers/{answer}/destroy', [
     'as' => 'questions.answers.destroy'
 ]);
 
-Route::post('/questions/{question}/answers/{answer}/edit', [
+Route::get('/questions/{question}/answers/{answer}/edit', [
     'uses' => 'AnswersController@edit',
     'as' => 'questions.answers.edit'
 ]);
