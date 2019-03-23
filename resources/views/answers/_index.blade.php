@@ -44,7 +44,7 @@
                                         @endcan
 
                                         @can('delete', $answer)
-                                            <form class="form-delete" action="{{ route('questions.answers.destroy', [$question->id, $question->id]) }}" method="post">
+                                            <form class="form-delete" action="{{ route('questions.answers.destroy', [$question->id, $answer->id]) }}" method="post">
                                                 <button
                                                     type="submit"
                                                     class="btn btn-sm btn-outline-danger"
