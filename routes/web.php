@@ -81,3 +81,8 @@ Route::get('/questions/{question}/answers/{answer}/edit', [
     'uses' => 'AnswersController@edit',
     'as' => 'questions.answers.edit'
 ]);
+
+Route::post('answers/{answer}/accept', [
+    'uses' => 'AcceptAnswerController',
+    'as' => 'answers.accept'
+]);
