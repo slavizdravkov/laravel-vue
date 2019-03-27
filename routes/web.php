@@ -82,7 +82,19 @@ Route::get('/questions/{question}/answers/{answer}/edit', [
     'as' => 'questions.answers.edit'
 ]);
 
-Route::post('answers/{answer}/accept', [
+Route::post('/answers/{answer}/accept', [
     'uses' => 'AcceptAnswerController',
     'as' => 'answers.accept'
 ]);
+
+Route::group(['middleware' => ['auth']], function () {
+    Route::post('/questions/{question}/favorite', [
+        'uses' => 'FavoritesController@store',
+        'as' => 'questions.favorite'
+    ]);
+
+    Route::post('/questions/{question}/unfavorite', [
+        'uses' => 'FavoritesController@delete',
+        'as' => 'questions.unfavorite'
+    ]);
+});
