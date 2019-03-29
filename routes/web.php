@@ -98,3 +98,9 @@ Route::group(['middleware' => ['auth']], function () {
         'as' => 'questions.unfavorite'
     ]);
 });
+
+Route::post('/questions/{question}/vote', [
+    'uses' => 'VoteQuestionController',
+    'as' => 'questions.vote',
+    'middleware' => ['auth']
+]);
