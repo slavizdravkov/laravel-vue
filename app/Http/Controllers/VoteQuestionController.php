@@ -7,9 +7,9 @@ use Illuminate\Http\Request;
 
 class VoteQuestionController extends Controller
 {
-    public function __invoke(Question $question)
+    public function __invoke(Question $question, Request $request)
     {
-        $vote = (int) request()->vote;
+        $vote = (int) $request->input('vote');
 
         auth()->user()->voteQuestion($question, $vote);
 

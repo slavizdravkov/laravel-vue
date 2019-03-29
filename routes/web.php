@@ -104,3 +104,9 @@ Route::post('/questions/{question}/vote', [
     'as' => 'questions.vote',
     'middleware' => ['auth']
 ]);
+
+Route::post('/answers/{answer}/vote', [
+    'uses' => 'VoteAnswerController',
+    'as' => 'answers.vote',
+    'middleware' => ['auth']
+]);
