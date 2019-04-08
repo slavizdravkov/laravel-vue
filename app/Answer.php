@@ -31,7 +31,7 @@ class Answer extends Model
      */
     public function getBodyHtmlAttribute()
     {
-        return \Parsedown::instance()->text($this->body);
+        return clean(\Parsedown::instance()->text($this->body));
     }
 
     /**

@@ -24,11 +24,6 @@ Route::group(['prefix' => 'questions'], function () {
         'as' => 'questions.index'
     ]);
 
-    Route::get('{slug}', [
-        'uses' => 'QuestionsController@show',
-        'as' => 'questions.show'
-    ]);
-
     Route::group(['middleware' => ['auth']], function () {
         Route::get('create', [
             'uses' => 'QuestionsController@create',
@@ -55,6 +50,11 @@ Route::group(['prefix' => 'questions'], function () {
             'as' => 'questions.destroy'
         ]);
     });
+
+    Route::get('{slug}', [
+        'uses' => 'QuestionsController@show',
+        'as' => 'questions.show'
+    ]);
 
 });
 
