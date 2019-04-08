@@ -11,6 +11,8 @@ class Question extends Model
 
     protected $fillable = ['title', 'body'];
 
+    protected $appends = ['created_date'];
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

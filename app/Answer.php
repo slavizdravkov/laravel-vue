@@ -10,6 +10,8 @@ class Answer extends Model
 
     protected $fillable = ['body', 'user_id'];
 
+    protected $appends = ['created_date'];
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
