@@ -5,6 +5,10 @@
         computed: {
             isInvalid () {
                 return this.body.length < 10;
+            },
+
+            answersEndpointBase () {
+                return `/questions/${this.questionId}/answers/${this.id}`;
             }
         },
 
@@ -31,7 +35,7 @@
             },
 
             update () {
-                axios.post(`/questions/${this.questionId}/answers/${this.id}/update`, {
+                axios.post(`${this.answersEndpointBase}/update`, {
                     body: this.body
                 })
                 .then(response => {
@@ -42,6 +46,17 @@
                 .catch(error => {
                     alert(error.response.data.message)
                 });
+            },
+
+            remove () {
+                if (confirm('Are you sure?')) {
+                    axios.post(`${this.answersEndpointBase}/destroy`)
+                    .then(response => {
+                        $(this.$el).fadeOut(500, () => {
+                            alert(response.data.message);
+                        })
+                    })
+                }
             }
         }
     }

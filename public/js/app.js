@@ -1768,6 +1768,9 @@ __webpack_require__.r(__webpack_exports__);
   computed: {
     isInvalid: function isInvalid() {
       return this.body.length < 10;
+    },
+    answersEndpointBase: function answersEndpointBase() {
+      return "/questions/".concat(this.questionId, "/answers/").concat(this.id);
     }
   },
   data: function data() {
@@ -1792,7 +1795,7 @@ __webpack_require__.r(__webpack_exports__);
     update: function update() {
       var _this = this;
 
-      axios.post("/questions/".concat(this.questionId, "/answers/").concat(this.id, "/update"), {
+      axios.post("".concat(this.answersEndpointBase, "/update"), {
         body: this.body
       }).then(function (response) {
         _this.editing = false;
@@ -1801,6 +1804,17 @@ __webpack_require__.r(__webpack_exports__);
       }).catch(function (error) {
         alert(error.response.data.message);
       });
+    },
+    remove: function remove() {
+      var _this2 = this;
+
+      if (confirm('Are you sure?')) {
+        axios.post("".concat(this.answersEndpointBase, "/destroy")).then(function (response) {
+          $(_this2.$el).fadeOut(500, function () {
+            alert(response.data.message);
+          });
+        });
+      }
     }
   }
 });
@@ -49248,8 +49262,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! D:\Projects\Learning\laravel-vue\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! D:\Projects\Learning\laravel-vue\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! E:\Projects\laravel\laravel-vue\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! E:\Projects\laravel\laravel-vue\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

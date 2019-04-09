@@ -81,11 +81,17 @@ class AnswersController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function destroy(Question $question, Answer $answer)
+    public function destroy(Question $question, Answer $answer, Request $request)
     {
         $this->authorize('delete', $answer);
 
         $answer->delete();
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => 'Your answer has been removed'
+            ]);
+        }
 
         return back()->with('success', 'Your answer has been removed');
     }
