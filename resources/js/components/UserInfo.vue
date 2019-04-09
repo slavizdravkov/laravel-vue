@@ -17,12 +17,12 @@
         props: ['model', 'label'],
 
         computed: {
-            postDate: function () {
+            postDate () {
                 return this.label + ' ' + this.model.created_date;
             },
         },
 
-        data: function () {
+        data () {
             return {
                 user: this.model.user,
                 url: '#'
