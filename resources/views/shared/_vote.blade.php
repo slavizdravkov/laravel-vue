@@ -55,8 +55,6 @@
     @if($model instanceof \App\Question)
         <favorite v-bind:question="{{ $model }}"></favorite>
     @elseif($model instanceof \App\Answer)
-        @include('shared._accept', [
-            'model' => $model
-        ])
+        <accept v-bind:answer="{{ $model }}"></accept>
     @endif
 </div>
