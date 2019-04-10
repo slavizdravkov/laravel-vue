@@ -34,10 +34,6 @@
 
             endpoint () {
                 return this.isFavorited ? `/questions/${this.id}/unfavorite` : `/questions/${this.id}/favorite`
-            },
-
-            signedIn () {
-                return window.Auth.signedIn;
             }
         },
 
