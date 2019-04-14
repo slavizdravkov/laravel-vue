@@ -97,9 +97,7 @@
                         ['<button><b>YES</b></button>', (instance, toast) => {
                             axios.post(`${this.answersEndpointBase}/destroy`)
                                 .then(response => {
-                                    $(this.$el).fadeOut(500, () => {
-                                        this.$toast.success(response.data.message, 'Success', {timeout: 3000});
-                                    })
+                                    this.$emit('deleted');
                                 });
 
                             instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
