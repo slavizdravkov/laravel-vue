@@ -62,25 +62,32 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::post('/questions/{question}/answers/store', [
-    'uses' => 'AnswersController@store',
-    'as' => 'questions.answers.store'
+Route::get('/questions/{question}/answers', [
+    'uses' => 'AnswersController@index',
+    'as' => 'questions.answers.index'
 ]);
 
-Route::post('/questions/{question}/answers/{answer}/update', [
-    'uses' => 'AnswersController@update',
-    'as' => 'questions.answers.update'
-]);
+Route::group(['middleware' => ['auth']], function () {
+    Route::post('/questions/{question}/answers/store', [
+        'uses' => 'AnswersController@store',
+        'as' => 'questions.answers.store'
+    ]);
 
-Route::post('/questions/{question}/answers/{answer}/destroy', [
-    'uses' => 'AnswersController@destroy',
-    'as' => 'questions.answers.destroy'
-]);
+    Route::post('/questions/{question}/answers/{answer}/update', [
+        'uses' => 'AnswersController@update',
+        'as' => 'questions.answers.update'
+    ]);
 
-Route::get('/questions/{question}/answers/{answer}/edit', [
-    'uses' => 'AnswersController@edit',
-    'as' => 'questions.answers.edit'
-]);
+    Route::post('/questions/{question}/answers/{answer}/destroy', [
+        'uses' => 'AnswersController@destroy',
+        'as' => 'questions.answers.destroy'
+    ]);
+
+    Route::get('/questions/{question}/answers/{answer}/edit', [
+        'uses' => 'AnswersController@edit',
+        'as' => 'questions.answers.edit'
+    ]);
+});
 
 Route::post('/answers/{answer}/accept', [
     'uses' => 'AcceptAnswerController',
