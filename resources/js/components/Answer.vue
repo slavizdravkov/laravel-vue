@@ -34,6 +34,9 @@
     </div>
 </template>
 <script>
+    import Vote from './Vote';
+    import UserInfo from './UserInfo';
+
     export default {
         props: ['answer'],
 
@@ -110,6 +113,11 @@
                     ],
                 });
             }
+        },
+
+        components: {
+            Vote: Vote,
+            UserInfo: UserInfo
         }
     }
 </script>
