@@ -63,9 +63,12 @@
 <script>
     import Vote from './Vote';
     import UserInfo from './UserInfo';
+    import modification from '../mixins/modifications';
 
     export default {
         props: ['question'],
+
+        mixins: [modification],
 
         computed: {
             questionsUrl () {
@@ -90,78 +93,42 @@
                 title: this.question.title,
                 body: this.question.body,
                 bodyHtml: this.question.body_html,
-                editing: false,
                 id: this.question.id,
                 beforeEditCache: {}
             }
         },
 
         methods: {
-            edit () {
+            setEditCache () {
                 this.beforeEditCache = {
                     title: this.title,
                     body: this.body
                 };
-                this.editing = true;
             },
 
-            cancel () {
+            restoreFromCache () {
                 this.title = this.beforeEditCache.title;
                 this.body = this.beforeEditCache.body;
-                this.editing = false;
             },
 
-            update () {
-                axios.post(this.updateEndpoint, {
+            payload () {
+                return {
                     title: this.title,
                     body: this.body
-                })
-                .catch(({resp}) => {
-                    this.$toast.error(resp.data.message, 'Error', {
-                        timeout: 3000
-                    })
-                })
-                .then(({data}) => {
-                    this.bodyHtml = data.body_html;
-                    this.$toast.success(data.message, 'Success', {
-                        timeout: 3000
-                    });
-                    this.editing = false;
-                })
+                }
             },
 
-            remove () {
-                this.$toast.question('Are you sure about that?', 'Confirm', {
-                    timeout: 20000,
-                    close: false,
-                    overlay: true,
-                    displayMode: 'once',
-                    id: 'question',
-                    zindex: 999,
-                    title: 'Hey',
-                    position: 'center',
-                    buttons: [
-                        ['<button><b>YES</b></button>', (instance, toast) => {
-                            axios.post(this.deleteEndpoint)
-                            .then(({data}) => {
-                                this.$toast.success(data.message, 'Success', {
-                                    timeout: 2000
-                                });
-                            });
+            delete () {
+                axios.post(this.deleteEndpoint)
+                    .then(({data}) => {
+                        this.$toast.success(data.message, 'Success', {
+                            timeout: 2000
+                        });
+                    });
 
-                            setTimeout(() => {
-                                window.location.href = this.questionsUrl;
-                            }, 3000);
-
-                            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-                        }, true],
-                        ['<button>NO</button>', function (instance, toast) {
-
-                            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-
-                        }],
-                    ],
-                });
+                setTimeout(() => {
+                    window.location.href = this.questionsUrl;
+                }, 3000);
             }
         },
 

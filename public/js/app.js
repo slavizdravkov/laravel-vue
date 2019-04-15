@@ -1843,6 +1843,7 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Vote__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Vote */ "./resources/js/components/Vote.vue");
 /* harmony import */ var _UserInfo__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./UserInfo */ "./resources/js/components/UserInfo.vue");
+/* harmony import */ var _mixins_modifications__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../mixins/modifications */ "./resources/js/mixins/modifications.js");
 //
 //
 //
@@ -1878,10 +1879,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['answer'],
+  mixins: [_mixins_modifications__WEBPACK_IMPORTED_MODULE_2__["default"]],
   computed: {
     isInvalid: function isInvalid() {
       return this.body.length < 10;
@@ -1892,7 +1895,6 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      editing: false,
       body: this.answer.body,
       bodyHtml: this.answer.body_html,
       id: this.answer.id,
@@ -1901,56 +1903,26 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
-    edit: function edit() {
+    setEditCache: function setEditCache() {
       this.beforeEditCache = this.body;
-      this.editing = true;
     },
-    cancel: function cancel() {
+    restoreFromCache: function restoreFromCache() {
       this.body = this.beforeEditCache;
-      this.editing = false;
     },
-    update: function update() {
+    payload: function payload() {
+      return {
+        body: this.body
+      };
+    },
+    delete: function _delete() {
       var _this = this;
 
-      axios.post("".concat(this.answersEndpointBase, "/update"), {
-        body: this.body
-      }).then(function (response) {
-        _this.editing = false;
-        _this.bodyHtml = response.data.body_html;
-
-        _this.$toast.success(response.data.message, 'Success', {
-          timeout: 3000
+      axios.post("".concat(this.answersEndpointBase, "/destroy")).then(function (resp) {
+        _this.$toast.success(resp.message, 'Success', {
+          timeout: 2000
         });
-      }).catch(function (error) {
-        _this.$toast.error(error.response.data.message, 'Error', {
-          timeout: 3000
-        });
-      });
-    },
-    remove: function remove() {
-      var _this2 = this;
 
-      this.$toast.question('Are you sure about that?', 'Confirm', {
-        timeout: 20000,
-        close: false,
-        overlay: true,
-        displayMode: 'once',
-        id: 'question',
-        zindex: 999,
-        title: 'Hey',
-        position: 'center',
-        buttons: [['<button><b>YES</b></button>', function (instance, toast) {
-          axios.post("".concat(_this2.answersEndpointBase, "/destroy")).then(function (response) {
-            _this2.$emit('deleted');
-          });
-          instance.hide({
-            transitionOut: 'fadeOut'
-          }, toast, 'button');
-        }, true], ['<button>NO</button>', function (instance, toast) {
-          instance.hide({
-            transitionOut: 'fadeOut'
-          }, toast, 'button');
-        }]]
+        _this.$emit('deleted');
       });
     }
   },
@@ -2205,6 +2177,7 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Vote__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Vote */ "./resources/js/components/Vote.vue");
 /* harmony import */ var _UserInfo__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./UserInfo */ "./resources/js/components/UserInfo.vue");
+/* harmony import */ var _mixins_modifications__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../mixins/modifications */ "./resources/js/mixins/modifications.js");
 //
 //
 //
@@ -2267,10 +2240,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['question'],
+  mixins: [_mixins_modifications__WEBPACK_IMPORTED_MODULE_2__["default"]],
   computed: {
     questionsUrl: function questionsUrl() {
       return '/questions';
@@ -2290,79 +2265,40 @@ __webpack_require__.r(__webpack_exports__);
       title: this.question.title,
       body: this.question.body,
       bodyHtml: this.question.body_html,
-      editing: false,
       id: this.question.id,
       beforeEditCache: {}
     };
   },
   methods: {
-    edit: function edit() {
+    setEditCache: function setEditCache() {
       this.beforeEditCache = {
         title: this.title,
         body: this.body
       };
-      this.editing = true;
     },
-    cancel: function cancel() {
+    restoreFromCache: function restoreFromCache() {
       this.title = this.beforeEditCache.title;
       this.body = this.beforeEditCache.body;
-      this.editing = false;
     },
-    update: function update() {
-      var _this = this;
-
-      axios.post(this.updateEndpoint, {
+    payload: function payload() {
+      return {
         title: this.title,
         body: this.body
-      }).catch(function (_ref) {
-        var resp = _ref.resp;
+      };
+    },
+    delete: function _delete() {
+      var _this = this;
 
-        _this.$toast.error(resp.data.message, 'Error', {
-          timeout: 3000
-        });
-      }).then(function (_ref2) {
-        var data = _ref2.data;
-        _this.bodyHtml = data.body_html;
+      axios.post(this.deleteEndpoint).then(function (_ref) {
+        var data = _ref.data;
 
         _this.$toast.success(data.message, 'Success', {
-          timeout: 3000
+          timeout: 2000
         });
-
-        _this.editing = false;
       });
-    },
-    remove: function remove() {
-      var _this2 = this;
-
-      this.$toast.question('Are you sure about that?', 'Confirm', {
-        timeout: 20000,
-        close: false,
-        overlay: true,
-        displayMode: 'once',
-        id: 'question',
-        zindex: 999,
-        title: 'Hey',
-        position: 'center',
-        buttons: [['<button><b>YES</b></button>', function (instance, toast) {
-          axios.post(_this2.deleteEndpoint).then(function (_ref3) {
-            var data = _ref3.data;
-
-            _this2.$toast.success(data.message, 'Success', {
-              timeout: 2000
-            });
-          });
-          setTimeout(function () {
-            window.location.href = _this2.questionsUrl;
-          }, 3000);
-          instance.hide({
-            transitionOut: 'fadeOut'
-          }, toast, 'button');
-        }, true], ['<button>NO</button>', function (instance, toast) {
-          instance.hide({
-            transitionOut: 'fadeOut'
-          }, toast, 'button');
-        }]]
-      });
+      setTimeout(function () {
+        window.location.href = _this.questionsUrl;
+      }, 3000);
     }
   },
   components: {
@@ -53351,6 +53287,84 @@ __webpack_require__.r(__webpack_exports__);
 
 var eventBus = new vue__WEBPACK_IMPORTED_MODULE_0___default.a();
 /* harmony default export */ __webpack_exports__["default"] = (eventBus);
+
+/***/ }),
+
+/***/ "./resources/js/mixins/modifications.js":
+/*!**********************************************!*\
+  !*** ./resources/js/mixins/modifications.js ***!
+  \**********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      editing: false
+    };
+  },
+  methods: {
+    edit: function edit() {
+      this.setEditCache();
+      this.editing = true;
+    },
+    cancel: function cancel() {
+      this.restoreFromCache();
+      this.editing = false;
+    },
+    setEditCache: function setEditCache() {},
+    restoreFromCache: function restoreFromCache() {},
+    update: function update() {
+      var _this = this;
+
+      axios.post(this.updateEndpoint, this.payload()).catch(function (_ref) {
+        var resp = _ref.resp;
+
+        _this.$toast.error(resp.data.message, 'Error', {
+          timeout: 3000
+        });
+      }).then(function (_ref2) {
+        var data = _ref2.data;
+        _this.bodyHtml = data.body_html;
+
+        _this.$toast.success(data.message, 'Success', {
+          timeout: 3000
+        });
+
+        _this.editing = false;
+      });
+    },
+    payload: function payload() {},
+    remove: function remove() {
+      var _this2 = this;
+
+      this.$toast.question('Are you sure about that?', 'Confirm', {
+        timeout: 20000,
+        close: false,
+        overlay: true,
+        displayMode: 'once',
+        id: 'question',
+        zindex: 999,
+        title: 'Hey',
+        position: 'center',
+        buttons: [['<button><b>YES</b></button>', function (instance, toast) {
+          _this2.delete();
+
+          instance.hide({
+            transitionOut: 'fadeOut'
+          }, toast, 'button');
+        }, true], ['<button>NO</button>', function (instance, toast) {
+          instance.hide({
+            transitionOut: 'fadeOut'
+          }, toast, 'button');
+        }]]
+      });
+    },
+    delete: function _delete() {}
+  }
+});
 
 /***/ }),
 
