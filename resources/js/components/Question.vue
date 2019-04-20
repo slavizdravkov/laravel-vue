@@ -124,7 +124,7 @@
 
             delete () {
                 axios.post(this.deleteEndpoint)
-                    .then((data) => {
+                    .then(({data}) => {
                         this.$toast.success(data.message, 'Success', {
                             timeout: 2000
                         });

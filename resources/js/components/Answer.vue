@@ -88,8 +88,8 @@
 
             delete () {
                 axios.post(this.destroyEndpoint)
-                    .then((resp) => {
-                        this.$toast.success(resp.message, 'Success', {
+                    .then(({data}) => {
+                        this.$toast.success(data.message, 'Success', {
                             timeout: 2000
                         });
                         this.$emit('deleted');
