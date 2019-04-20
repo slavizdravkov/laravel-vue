@@ -2,11 +2,15 @@ import Prism from 'prismjs';
 
 export default {
     methods: {
-        highlight () {
-            const el = this.$refs.bodyHtml;
-            if (el) {
-                Prism.highlightAllUnder(el);
+        highlight (id = '') {
+            let el;
+            if (id) {
+                el = document.getElementById(id);
+            } else {
+                el = this.$refs.bodyHtml;
             }
+            console.log(el);
+            Prism.highlightAllUnder(el);
         }
     }
 }

@@ -2301,25 +2301,29 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
   },
   methods: {
     add: function add(answer) {
+      var _this = this;
+
       this.answers.push(answer);
       this.count++;
-      this.highlight();
+      this.$nextTick(function () {
+        _this.highlight("answer-".concat(answer));
+      });
     },
     remove: function remove(index) {
       this.answers.splice(index, 1);
       this.count--;
     },
     fetch: function fetch(endpoint) {
-      var _this = this;
+      var _this2 = this;
 
       axios.get(endpoint).then(function (_ref) {
-        var _this$answers;
+        var _this2$answers;
 
         var data = _ref.data;
 
-        (_this$answers = _this.answers).push.apply(_this$answers, _toConsumableArray(data.data));
+        (_this2$answers = _this2.answers).push.apply(_this2$answers, _toConsumableArray(data.data));
 
-        _this.nextUrl = data.next_page_url;
+        _this2.nextUrl = data.next_page_url;
       });
     }
   },
@@ -68895,6 +68899,7 @@ var render = function() {
           [
             _c("div", {
               ref: "bodyHtml",
+              attrs: { id: _vm.uniqueName },
               domProps: { innerHTML: _vm._s(_vm.bodyHtml) }
             }),
             _vm._v(" "),
@@ -69197,7 +69202,7 @@ var render = function() {
                 [
                   _c(
                     "m-editor",
-                    { attrs: { body: _vm.body, name: _vm.add - _vm.answer } },
+                    { attrs: { body: _vm.body, name: "new-answer" } },
                     [
                       _c("textarea", {
                         directives: [
@@ -82565,11 +82570,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   methods: {
     highlight: function highlight() {
-      var el = this.$refs.bodyHtml;
+      var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+      var el;
 
-      if (el) {
-        prismjs__WEBPACK_IMPORTED_MODULE_0___default.a.highlightAllUnder(el);
+      if (id) {
+        el = document.getElementById(id);
+      } else {
+        el = this.$refs.bodyHtml;
       }
+
+      console.log(el);
+      prismjs__WEBPACK_IMPORTED_MODULE_0___default.a.highlightAllUnder(el);
     }
   }
 });

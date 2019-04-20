@@ -9,7 +9,7 @@
                     <hr>
                     <form @submit.prevent="create">
                         <div class="form-group">
-                            <m-editor :body="body" :name="add-answer">
+                            <m-editor :body="body" name="new-answer">
                                 <textarea class="form-control" v-model="body" name="body" rows="7" required></textarea>
                             </m-editor>
                         </div>
