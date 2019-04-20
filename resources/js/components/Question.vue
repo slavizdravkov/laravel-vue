@@ -13,7 +13,7 @@
                         <vote :model="question" name="question"></vote>
                         <div class="media-body">
                             <div class="form-group">
-                                <m-editor :body="body">
+                                <m-editor :body="body" :name="uniqueName">
                                     <textarea v-model="body" rows="10" class="form-control" required></textarea>
                                 </m-editor>
                             </div>
@@ -63,9 +63,6 @@
 </template>
 
 <script>
-    import Vote from './Vote';
-    import UserInfo from './UserInfo';
-    import MEditor from './MEditor';
     import modification from '../mixins/modifications';
 
     export default {
@@ -88,6 +85,10 @@
 
             deleteEndpoint () {
                 return `/questions/${this.id}/destroy`;
+            },
+
+            uniqueName () {
+                return `question-${this.id}`;
             }
         },
 
@@ -123,7 +124,7 @@
 
             delete () {
                 axios.post(this.deleteEndpoint)
-                    .then(({data}) => {
+                    .then((data) => {
                         this.$toast.success(data.message, 'Success', {
                             timeout: 2000
                         });
@@ -133,12 +134,6 @@
                     window.location.href = this.questionsUrl;
                 }, 3000);
             }
-        },
-
-        components: {
-            Vote: Vote,
-            UserInfo: UserInfo,
-            MEditor: MEditor
         }
     }
 </script>

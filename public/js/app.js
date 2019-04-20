@@ -2134,9 +2134,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _Vote__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Vote */ "./resources/js/components/Vote.vue");
-/* harmony import */ var _UserInfo__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./UserInfo */ "./resources/js/components/UserInfo.vue");
-/* harmony import */ var _mixins_modifications__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../mixins/modifications */ "./resources/js/mixins/modifications.js");
+/* harmony import */ var _mixins_modifications__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../mixins/modifications */ "./resources/js/mixins/modifications.js");
 //
 //
 //
@@ -2172,18 +2170,24 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-
-
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['answer'],
-  mixins: [_mixins_modifications__WEBPACK_IMPORTED_MODULE_2__["default"]],
+  mixins: [_mixins_modifications__WEBPACK_IMPORTED_MODULE_0__["default"]],
   computed: {
     isInvalid: function isInvalid() {
       return this.body.length < 10;
     },
-    answersEndpointBase: function answersEndpointBase() {
-      return "/questions/".concat(this.questionId, "/answers/").concat(this.id);
+    destroyEndpoint: function destroyEndpoint() {
+      return this.buildEndpoint('destroy');
+    },
+    updateEndpoint: function updateEndpoint() {
+      return this.buildEndpoint('update');
+    },
+    uniqueName: function uniqueName() {
+      return "answer-".concat(this.id);
     }
   },
   data: function data() {
@@ -2210,18 +2214,17 @@ __webpack_require__.r(__webpack_exports__);
     delete: function _delete() {
       var _this = this;
 
-      axios.post("".concat(this.answersEndpointBase, "/destroy")).then(function (resp) {
+      axios.post(this.destroyEndpoint).then(function (resp) {
         _this.$toast.success(resp.message, 'Success', {
           timeout: 2000
         });
 
         _this.$emit('deleted');
       });
+    },
+    buildEndpoint: function buildEndpoint(method) {
+      return "/questions/".concat(this.questionId, "/answers/").concat(this.id, "/").concat(method);
     }
-  },
-  components: {
-    Vote: _Vote__WEBPACK_IMPORTED_MODULE_0__["default"],
-    UserInfo: _UserInfo__WEBPACK_IMPORTED_MODULE_1__["default"]
   }
 });
 
@@ -2434,10 +2437,16 @@ __webpack_require__.r(__webpack_exports__);
 var md = new markdown_it__WEBPACK_IMPORTED_MODULE_0___default.a();
 md.use(markdown_it_prism__WEBPACK_IMPORTED_MODULE_1___default.a);
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['body'],
+  props: ['body', 'name'],
   computed: {
     preview: function preview() {
       return md.render(this.body);
+    }
+  },
+  methods: {
+    tabId: function tabId(tabName) {
+      var hash = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+      return "".concat(hash).concat(tabName).concat(this.name);
     }
   },
   updated: function updated() {
@@ -2523,10 +2532,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _Vote__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Vote */ "./resources/js/components/Vote.vue");
-/* harmony import */ var _UserInfo__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./UserInfo */ "./resources/js/components/UserInfo.vue");
-/* harmony import */ var _MEditor__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./MEditor */ "./resources/js/components/MEditor.vue");
-/* harmony import */ var _mixins_modifications__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../mixins/modifications */ "./resources/js/mixins/modifications.js");
+/* harmony import */ var _mixins_modifications__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../mixins/modifications */ "./resources/js/mixins/modifications.js");
 //
 //
 //
@@ -2591,13 +2597,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-
-
-
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['question'],
-  mixins: [_mixins_modifications__WEBPACK_IMPORTED_MODULE_3__["default"]],
+  mixins: [_mixins_modifications__WEBPACK_IMPORTED_MODULE_0__["default"]],
   computed: {
     questionsUrl: function questionsUrl() {
       return '/questions';
@@ -2610,6 +2613,9 @@ __webpack_require__.r(__webpack_exports__);
     },
     deleteEndpoint: function deleteEndpoint() {
       return "/questions/".concat(this.id, "/destroy");
+    },
+    uniqueName: function uniqueName() {
+      return "question-".concat(this.id);
     }
   },
   data: function data() {
@@ -2641,9 +2647,7 @@ __webpack_require__.r(__webpack_exports__);
     delete: function _delete() {
       var _this = this;
 
-      axios.post(this.deleteEndpoint).then(function (_ref) {
-        var data = _ref.data;
-
+      axios.post(this.deleteEndpoint).then(function (data) {
         _this.$toast.success(data.message, 'Success', {
           timeout: 2000
         });
@@ -2652,11 +2656,6 @@ __webpack_require__.r(__webpack_exports__);
         window.location.href = _this.questionsUrl;
       }, 3000);
     }
-  },
-  components: {
-    Vote: _Vote__WEBPACK_IMPORTED_MODULE_0__["default"],
-    UserInfo: _UserInfo__WEBPACK_IMPORTED_MODULE_1__["default"],
-    MEditor: _MEditor__WEBPACK_IMPORTED_MODULE_2__["default"]
   }
 });
 
@@ -68791,119 +68790,154 @@ var render = function() {
       _c("vote", { attrs: { model: _vm.answer, name: "answer" } }),
       _vm._v(" "),
       _c("div", { staticClass: "media-body" }, [
-        _vm.editing
-          ? _c(
-              "form",
+        _c(
+          "form",
+          {
+            directives: [
               {
-                on: {
-                  submit: function($event) {
-                    $event.preventDefault()
-                    return _vm.update($event)
-                  }
-                }
-              },
+                name: "show",
+                rawName: "v-show",
+                value: _vm.authorize("modify", _vm.answer) && _vm.editing,
+                expression: "authorize('modify', answer) && editing"
+              }
+            ],
+            on: {
+              submit: function($event) {
+                $event.preventDefault()
+                return _vm.update($event)
+              }
+            }
+          },
+          [
+            _c(
+              "div",
+              { staticClass: "form-group" },
               [
-                _c("div", { staticClass: "form-group" }, [
-                  _c("textarea", {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.body,
-                        expression: "body"
-                      }
-                    ],
-                    staticClass: "form-control",
-                    attrs: { rows: "10", required: "" },
-                    domProps: { value: _vm.body },
-                    on: {
-                      input: function($event) {
-                        if ($event.target.composing) {
-                          return
-                        }
-                        _vm.body = $event.target.value
-                      }
-                    }
-                  })
-                ]),
-                _vm._v(" "),
                 _c(
-                  "button",
-                  {
-                    staticClass: "btn btn-primary",
-                    attrs: { disabled: _vm.isInvalid }
-                  },
-                  [_vm._v("Update")]
-                ),
-                _vm._v(" "),
-                _c(
-                  "button",
-                  {
-                    staticClass: "btn btn-outline-secondary",
-                    attrs: { type: "button" },
-                    on: { click: _vm.cancel }
-                  },
-                  [_vm._v("Cancel")]
-                )
-              ]
-            )
-          : _c("div", [
-              _c("div", { domProps: { innerHTML: _vm._s(_vm.bodyHtml) } }),
-              _vm._v(" "),
-              _c("div", { staticClass: "row" }, [
-                _c("div", { staticClass: "col-4" }, [
-                  _c("div", { staticClass: "ml-auto" }, [
-                    _vm.authorize("modify", _vm.answer)
-                      ? _c(
-                          "a",
-                          {
-                            staticClass: "btn btn-sm btn-outline-info",
-                            on: {
-                              click: function($event) {
-                                $event.preventDefault()
-                                return _vm.edit($event)
-                              }
-                            }
-                          },
-                          [
-                            _vm._v(
-                              "\n                            Edit\n                        "
-                            )
-                          ]
-                        )
-                      : _vm._e(),
-                    _vm._v(" "),
-                    _vm.authorize("modify", _vm.answer)
-                      ? _c(
-                          "button",
-                          {
-                            staticClass: "btn btn-sm btn-outline-danger",
-                            on: { click: _vm.remove }
-                          },
-                          [
-                            _vm._v(
-                              "\n                            Delete\n                        "
-                            )
-                          ]
-                        )
-                      : _vm._e()
-                  ])
-                ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "col-4" }),
-                _vm._v(" "),
-                _c(
-                  "div",
-                  { staticClass: "col-4" },
+                  "m-editor",
+                  { attrs: { body: _vm.body, name: _vm.uniqueName } },
                   [
-                    _c("user-info", {
-                      attrs: { model: _vm.answer, label: "Answered" }
+                    _c("textarea", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.body,
+                          expression: "body"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { rows: "10", required: "" },
+                      domProps: { value: _vm.body },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.body = $event.target.value
+                        }
+                      }
                     })
-                  ],
-                  1
+                  ]
                 )
-              ])
+              ],
+              1
+            ),
+            _vm._v(" "),
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-primary",
+                attrs: { disabled: _vm.isInvalid }
+              },
+              [_vm._v("Update")]
+            ),
+            _vm._v(" "),
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-outline-secondary",
+                attrs: { type: "button" },
+                on: { click: _vm.cancel }
+              },
+              [_vm._v("Cancel")]
+            )
+          ]
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            directives: [
+              {
+                name: "show",
+                rawName: "v-show",
+                value: !_vm.editing,
+                expression: "!editing"
+              }
+            ]
+          },
+          [
+            _c("div", {
+              ref: "bodyHtml",
+              domProps: { innerHTML: _vm._s(_vm.bodyHtml) }
+            }),
+            _vm._v(" "),
+            _c("div", { staticClass: "row" }, [
+              _c("div", { staticClass: "col-4" }, [
+                _c("div", { staticClass: "ml-auto" }, [
+                  _vm.authorize("modify", _vm.answer)
+                    ? _c(
+                        "a",
+                        {
+                          staticClass: "btn btn-sm btn-outline-info",
+                          on: {
+                            click: function($event) {
+                              $event.preventDefault()
+                              return _vm.edit($event)
+                            }
+                          }
+                        },
+                        [
+                          _vm._v(
+                            "\n                            Edit\n                        "
+                          )
+                        ]
+                      )
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm.authorize("modify", _vm.answer)
+                    ? _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-sm btn-outline-danger",
+                          on: { click: _vm.remove }
+                        },
+                        [
+                          _vm._v(
+                            "\n                            Delete\n                        "
+                          )
+                        ]
+                      )
+                    : _vm._e()
+                ])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-4" }),
+              _vm._v(" "),
+              _c(
+                "div",
+                { staticClass: "col-4" },
+                [
+                  _c("user-info", {
+                    attrs: { model: _vm.answer, label: "Answered" }
+                  })
+                ],
+                1
+              )
             ])
+          ]
+        )
       ])
     ],
     1
@@ -69059,37 +69093,14 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "card" }, [
-    _vm._m(0),
-    _vm._v(" "),
-    _c("div", { staticClass: "card-body tab-content" }, [
-      _c(
-        "div",
-        { staticClass: "tab-pane active", attrs: { id: "write" } },
-        [_vm._t("default")],
-        2
-      ),
-      _vm._v(" "),
-      _c("div", {
-        staticClass: "tab-pane",
-        attrs: { id: "preview" },
-        domProps: { innerHTML: _vm._s(_vm.preview) }
-      })
-    ])
-  ])
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card-header" }, [
+    _c("div", { staticClass: "card-header" }, [
       _c("ul", { staticClass: "nav nav-tabs card-header-tabs" }, [
         _c("li", { staticClass: "nav-item" }, [
           _c(
             "a",
             {
               staticClass: "nav-link active",
-              attrs: { "data-toggle": "tab", href: "#write" }
+              attrs: { "data-toggle": "tab", href: _vm.tabId("write", "#") }
             },
             [_vm._v("Write")]
           )
@@ -69100,15 +69111,31 @@ var staticRenderFns = [
             "a",
             {
               staticClass: "nav-link",
-              attrs: { "data-toggle": "tab", href: "#preview" }
+              attrs: { "data-toggle": "tab", href: _vm.tabId("preview", "#") }
             },
             [_vm._v("Preview")]
           )
         ])
       ])
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "card-body tab-content" }, [
+      _c(
+        "div",
+        { staticClass: "tab-pane active", attrs: { id: _vm.tabId("write") } },
+        [_vm._t("default")],
+        2
+      ),
+      _vm._v(" "),
+      _c("div", {
+        staticClass: "tab-pane",
+        attrs: { id: _vm.tabId("preview") },
+        domProps: { innerHTML: _vm._s(_vm.preview) }
+      })
     ])
-  }
-]
+  ])
+}
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -69283,29 +69310,33 @@ var render = function() {
                     "div",
                     { staticClass: "form-group" },
                     [
-                      _c("m-editor", { attrs: { body: _vm.body } }, [
-                        _c("textarea", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.body,
-                              expression: "body"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: { rows: "10", required: "" },
-                          domProps: { value: _vm.body },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
+                      _c(
+                        "m-editor",
+                        { attrs: { body: _vm.body, name: _vm.uniqueName } },
+                        [
+                          _c("textarea", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.body,
+                                expression: "body"
                               }
-                              _vm.body = $event.target.value
+                            ],
+                            staticClass: "form-control",
+                            attrs: { rows: "10", required: "" },
+                            domProps: { value: _vm.body },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.body = $event.target.value
+                              }
                             }
-                          }
-                        })
-                      ])
+                          })
+                        ]
+                      )
                     ],
                     1
                   ),
@@ -82528,10 +82559,21 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _highlight__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./highlight */ "./resources/js/mixins/highlight.js");
+/* harmony import */ var _components_Vote__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../components/Vote */ "./resources/js/components/Vote.vue");
+/* harmony import */ var _components_UserInfo__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../components/UserInfo */ "./resources/js/components/UserInfo.vue");
+/* harmony import */ var _components_MEditor__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../components/MEditor */ "./resources/js/components/MEditor.vue");
+/* harmony import */ var _highlight__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./highlight */ "./resources/js/mixins/highlight.js");
+
+
+
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  mixins: [_highlight__WEBPACK_IMPORTED_MODULE_0__["default"]],
+  mixins: [_highlight__WEBPACK_IMPORTED_MODULE_3__["default"]],
+  components: {
+    Vote: _components_Vote__WEBPACK_IMPORTED_MODULE_0__["default"],
+    UserInfo: _components_UserInfo__WEBPACK_IMPORTED_MODULE_1__["default"],
+    MEditor: _components_MEditor__WEBPACK_IMPORTED_MODULE_2__["default"]
+  },
   data: function data() {
     return {
       editing: false
@@ -82552,9 +82594,9 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       axios.post(this.updateEndpoint, this.payload()).catch(function (_ref) {
-        var resp = _ref.resp;
+        var data = _ref.data;
 
-        _this.$toast.error(resp.data.message, 'Error', {
+        _this.$toast.error(data.message, 'Error', {
           timeout: 3000
         });
       }).then(function (_ref2) {

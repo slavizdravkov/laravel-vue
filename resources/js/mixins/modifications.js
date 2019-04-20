@@ -1,7 +1,17 @@
+import Vote from '../components/Vote';
+import UserInfo from '../components/UserInfo';
+import MEditor from '../components/MEditor';
+
 import highlight from './highlight';
 
 export default {
     mixins: [highlight],
+
+    components: {
+        Vote: Vote,
+        UserInfo: UserInfo,
+        MEditor: MEditor
+    },
 
     data () {
         return {
@@ -25,8 +35,8 @@ export default {
 
         update () {
             axios.post(this.updateEndpoint, this.payload())
-                .catch(({resp}) => {
-                    this.$toast.error(resp.data.message, 'Error', {
+                .catch(({data}) => {
+                    this.$toast.error(data.message, 'Error', {
                         timeout: 3000
                     })
                 })

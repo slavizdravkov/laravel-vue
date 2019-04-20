@@ -2,15 +2,17 @@
     <div class="media post">
         <vote :model="answer" name="answer"></vote>
         <div class="media-body">
-            <form v-if="editing" @submit.prevent="update">
+            <form v-show="authorize('modify', answer) && editing" @submit.prevent="update">
                 <div class="form-group">
-                    <textarea v-model="body" rows="10" class="form-control" required></textarea>
+                    <m-editor :body="body" :name="uniqueName">
+                        <textarea v-model="body" rows="10" class="form-control" required></textarea>
+                    </m-editor>
                 </div>
                 <button class="btn btn-primary" :disabled="isInvalid">Update</button>
                 <button class="btn btn-outline-secondary" @click="cancel" type="button">Cancel</button>
             </form>
-            <div v-else>
-                <div v-html="bodyHtml"></div>
+            <div v-show="!editing">
+                <div v-html="bodyHtml" ref="bodyHtml"></div>
                 <div class="row">
                     <div class="col-4">
                         <div class="ml-auto">
@@ -34,8 +36,6 @@
     </div>
 </template>
 <script>
-    import Vote from './Vote';
-    import UserInfo from './UserInfo';
     import modification from '../mixins/modifications';
 
     export default {
@@ -48,9 +48,17 @@
                 return this.body.length < 10;
             },
 
-            answersEndpointBase () {
-                return `/questions/${this.questionId}/answers/${this.id}`;
-            }
+            destroyEndpoint () {
+                return this.buildEndpoint('destroy');
+            },
+
+            updateEndpoint () {
+                return this.buildEndpoint('update');
+            },
+
+            uniqueName () {
+                return `answer-${this.id}`;
+            },
         },
 
         data () {
@@ -79,19 +87,18 @@
             },
 
             delete () {
-                axios.post(`${this.answersEndpointBase}/destroy`)
-                    .then(resp => {
+                axios.post(this.destroyEndpoint)
+                    .then((resp) => {
                         this.$toast.success(resp.message, 'Success', {
                             timeout: 2000
                         });
                         this.$emit('deleted');
                     });
-            }
-        },
+            },
 
-        components: {
-            Vote: Vote,
-            UserInfo: UserInfo
+            buildEndpoint (method) {
+                return `/questions/${this.questionId}/answers/${this.id}/${method}`;
+            },
         }
     }
 </script>
