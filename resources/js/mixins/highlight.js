@@ -9,7 +9,7 @@ export default {
             } else {
                 el = this.$refs.bodyHtml;
             }
-            console.log(el);
+
             Prism.highlightAllUnder(el);
         }
     }
